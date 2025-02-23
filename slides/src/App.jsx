@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Lenis from '@studio-freight/lenis'
+import { SlideContent } from './components/SlideContent'
 import './App.css'
 
 function App() {
@@ -114,7 +115,7 @@ function App() {
               }}
             >
               <div className="slide-content">
-                <h2>{slide.title}</h2>
+                <SlideContent index={index} />
               </div>
             </section>
           )
