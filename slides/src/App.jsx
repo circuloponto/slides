@@ -16,9 +16,8 @@ function App() {
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
       smooth: true,
       smoothTouch: false,
       touchMultiplier: 2,
@@ -46,19 +45,18 @@ function App() {
   }, [])
 
   const getSlideProgress = (index) => {
-    // Calculate how many sections we've scrolled through
-    const totalSections = slides.length - 1
-    const currentSection = scrollProgress * totalSections
+    if (index === 0) return 1; // First slide is always fully visible
     
-    // Calculate progress for this specific slide
-    const slideStart = index - 0.5 // Start transition slightly before reaching the slide
-    const slideProgress = (currentSection - slideStart) / 0.5 // Complete transition over 50% of the scroll section
+    const sectionSize = 1 / (slides.length - 1)
+    const sectionStart = (index - 1) * sectionSize
+    const sectionEnd = index * sectionSize
     
-    return Math.max(0, Math.min(1, slideProgress))
+    const progress = (scrollProgress - sectionStart) / (sectionEnd - sectionStart)
+    return Math.max(0, Math.min(1, progress))
   }
 
   const getSlidePosition = (direction, progress) => {
-    const distance = 100 * (1 - progress) // Slides move from 100% to 0%
+    const distance = 100 * (1 - progress)
     
     switch(direction) {
       case 'right':
@@ -78,10 +76,28 @@ function App() {
     <div className="app-container" style={{ height: `${slides.length * 100}vh` }}>
       <nav className={`main-nav ${scrollProgress > 0.05 ? 'scrolled' : ''}`}>
         <ul>
-          <li>Home</li>
-          <li>About</li>
-          <li>Work</li>
-          <li>Contact</li>
+          {slides.map((_, index) => {
+            const targetScroll = (index / (slides.length - 1)) * 
+              (document.documentElement.scrollHeight - window.innerHeight)
+            
+            return (
+              <li 
+                key={index}
+                onClick={() => {
+                  window.lenis.scrollTo(targetScroll, {
+                    duration: 1.2,
+                    easing: (t) => t // Linear easing for smoother animation
+                  })
+                }}
+              >
+                {index === 0 ? 'Home' : 
+                 index === 1 ? 'About' :
+                 index === 2 ? 'Work' :
+                 index === 3 ? 'Services' :
+                 'Contact'}
+              </li>
+            )
+          })}
         </ul>
       </nav>
 
@@ -116,7 +132,8 @@ function App() {
               className={`nav-indicator ${Math.round(scrollProgress * (slides.length - 1)) === index ? 'active' : ''}`}
               onClick={() => {
                 window.lenis.scrollTo(targetScroll, {
-                  duration: 1.2
+                  duration: 1.2,
+                  easing: (t) => t
                 })
               }}
             />
