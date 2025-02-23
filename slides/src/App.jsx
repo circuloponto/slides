@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Lenis from '@studio-freight/lenis'
 import './App.css'
 
 function App() {
@@ -13,15 +14,34 @@ function App() {
   ]
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      smoothTouch: false,
+      touchMultiplier: 2,
+    })
+
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    const handleScroll = (e) => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      const progress = scrollPosition / maxScroll
+      const progress = e.animatedScroll / maxScroll
       setScrollProgress(progress)
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    lenis.on('scroll', handleScroll)
+
+    return () => {
+      lenis.destroy()
+    }
   }, [])
 
   const getSlideProgress = (index) => {
@@ -67,20 +87,23 @@ function App() {
       </div>
 
       <div className="navigation">
-        {slides.map((_, index) => (
-          <div 
-            key={index}
-            className={`nav-indicator ${Math.round(scrollProgress * (slides.length - 1)) === index ? 'active' : ''}`}
-            onClick={() => {
-              const targetScroll = (index / (slides.length - 1)) * 
-                (document.documentElement.scrollHeight - window.innerHeight)
-              window.scrollTo({
-                top: targetScroll,
-                behavior: 'smooth'
-              })
-            }}
-          />
-        ))}
+        {slides.map((_, index) => {
+          const targetScroll = (index / (slides.length - 1)) * 
+            (document.documentElement.scrollHeight - window.innerHeight)
+            
+          return (
+            <div 
+              key={index}
+              className={`nav-indicator ${Math.round(scrollProgress * (slides.length - 1)) === index ? 'active' : ''}`}
+              onClick={() => {
+                // Use Lenis's scrollTo instead of window.scrollTo
+                window.lenis.scrollTo(targetScroll, {
+                  duration: 1.2
+                })
+              }}
+            />
+          )
+        })}
       </div>
     </div>
   )
