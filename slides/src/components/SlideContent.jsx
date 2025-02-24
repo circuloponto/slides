@@ -2,12 +2,12 @@ import img1 from '../assets/img1.jpg'
 import img2 from '../assets/img2.jpg'
 
 // Base SlideContent component
-export const SlideContent = ({ index }) => {
+export const SlideContent = ({ index, progress }) => {
   switch(index) {
     case 0:
-      return <HomeSlide />
+      return <HomeSlide progress={progress} />
     case 1:
-      return <AboutSlide />
+      return <AboutSlide progress={progress} />
     case 2:
       return <WorkSlide />
     case 3:
@@ -19,32 +19,50 @@ export const SlideContent = ({ index }) => {
   }
 }
 
-const HomeSlide = () => (
+const HomeSlide = ({ progress }) => (
   <div className="home-slide">
     <div className="square-container">
-      <div 
-        className="expanding-square"
-        style={{
-          backgroundImage: `url(${img1})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      ></div>
+      <div className="expanding-square">
+        <img 
+          src={img1} 
+          alt="Home"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '200%',
+            height: '200%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            transform: `translate(-50%, -50%) scale(${1 - progress * 0.3})`,
+            transformOrigin: 'center'
+          }}
+        />
+      </div>
     </div>
   </div>
 )
 
-const AboutSlide = () => (
+const AboutSlide = ({ progress }) => (
   <div className="about-slide">
     <div className="square-container">
-      <div 
-        className="expanding-square about-square"
-        style={{
-          backgroundImage: `url(${img2})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      ></div>
+      <div className="expanding-square">
+        <img 
+          src={img2} 
+          alt="About"
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '250%',
+            height: '250%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            transform: `translate(-50%, -50%) scale(${1 - progress * 0.3})`,
+            transformOrigin: 'center'
+          }}
+        />
+      </div>
     </div>
   </div>
 )

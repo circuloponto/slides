@@ -46,9 +46,13 @@ function App() {
   }, [])
 
   const getSlideProgress = (index) => {
-    if (index === 0) return 1; // First slide is always fully visible
-    
     const sectionSize = 1 / (slides.length - 1)
+    
+    if (index === 0) {
+      // Calculate progress for first slide based on scroll into second section
+      return Math.max(0, Math.min(1, scrollProgress / sectionSize))
+    }
+    
     const sectionStart = (index - 1) * sectionSize
     const sectionEnd = index * sectionSize
     
@@ -115,7 +119,7 @@ function App() {
               }}
             >
               <div className="slide-content">
-                <SlideContent index={index} />
+                <SlideContent index={index} progress={progress} />
               </div>
             </section>
           )
