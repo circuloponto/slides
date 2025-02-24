@@ -1,3 +1,6 @@
+import img1 from '../assets/img1.jpg'
+import img2 from '../assets/img2.jpg'
+
 // Base SlideContent component
 export const SlideContent = ({ index }) => {
   switch(index) {
@@ -19,7 +22,14 @@ export const SlideContent = ({ index }) => {
 const HomeSlide = () => (
   <div className="home-slide">
     <div className="square-container">
-      <div className="expanding-square"></div>
+      <div 
+        className="expanding-square"
+        style={{
+          backgroundImage: `url(${img1})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      ></div>
     </div>
   </div>
 )
@@ -27,7 +37,14 @@ const HomeSlide = () => (
 const AboutSlide = () => (
   <div className="about-slide">
     <div className="square-container">
-      <div className="expanding-square about-square"></div>
+      <div 
+        className="expanding-square about-square"
+        style={{
+          backgroundImage: `url(${img2})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      ></div>
     </div>
   </div>
 )
