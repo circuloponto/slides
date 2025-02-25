@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import Lenis from '@studio-freight/lenis'
 import { SlideContent } from './components/SlideContent'
+import { NewNav } from './components/NewNav'
 import './App.css'
+import './styles/NewNav.css'
 
 function App() {
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -79,7 +81,8 @@ function App() {
 
   return (
     <div className="app-container" style={{ height: `${slides.length * 100}vh` }}>
-      <nav className={`main-nav ${scrollProgress > 0.05 ? 'scrolled' : ''}`}>
+      <NewNav scrollProgress={scrollProgress} />
+      {/* <nav className={`main-nav ${scrollProgress > 0.05 ? 'scrolled' : ''}`}>
         <ul>
           {slides.map((_, index) => {
             const targetScroll = (index / (slides.length - 1)) * 
@@ -104,7 +107,7 @@ function App() {
             )
           })}
         </ul>
-      </nav>
+      </nav> */}
 
       <div className="slides-container">
         {slides.map((slide, index) => {
